@@ -1,22 +1,25 @@
+const express = require("express");
 const fs = require("fs");
 const path = require("path");
 
-// Read the CSV file
-const filePath = path.join(__dirname, "emails.csv");
-const fileContent = fs.readFileSync(filePath, "utf8");
+const app = express();
 
-// log the second column of each row, skipping the first row
-const rows = fileContent.split(`\n`);
-rows.forEach((row, index) => {
-	if (index === 0) return;
-	const columns = row.split(",");
-	// check if the second column is a valid email
-	if (columns[1].includes("@") && columns[1].includes(".")) {
-		console.log(columns[1]);
-		// write columns[1] to a new file called test[index + 1].txt
-		const newFilePath = path.join(__dirname, `test${index + 1}.txt`);
-		fs.writeFileSync(newFilePath, columns[1]);
-	} else {
-		console.log(`Le mail n’est pas valide : ${columns[1]}`);
+app.get("/:fileName", (req, res) => {
+	// Get the file name from the request parameters
+	const fileName = req.params.fileName;
+	console.log(fileName);
+	// Read the file
+	const filePath = path.join(__dirname, `${fileName}.txt`);
+	try {
+		const fileContent = fs.readFileSync(filePath, "utf8");
+		// Send the file content as a JSON object with a "result" field
+		res.status(200).send({ result: fileContent });
+	} catch (error) {
+		// Return an error if the file does not exist or cannot be read
+		res.status(500).send({ error: "VALIDATION_ERROR" });
 	}
+});
+
+app.listen(3000, () => {
+	console.log("API listening on port 3000");
 });
