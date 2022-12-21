@@ -13,8 +13,8 @@ rows.forEach((row, index) => {
 	// check if the second column is a valid email
 	if (columns[1].includes("@") && columns[1].includes(".")) {
 		console.log(columns[1]);
-		// write columns[1] to a new file called test[index].txt
-		const newFilePath = path.join(__dirname, `test${index}.txt`);
+		// write columns[1] to a new file called test[index + 1].txt
+		const newFilePath = path.join(__dirname, `test${index + 1}.txt`);
 		fs.writeFileSync(newFilePath, columns[1]);
 	} else {
 		console.log(`Le mail n’est pas valide : ${columns[1]}`);
